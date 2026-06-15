@@ -1,0 +1,5 @@
+
+NOOBSHER-0.1v !! SERVER -=2026-06-10 11:21:16.338257=- !! SERVER : innitilized connection on 127.0.0.1:8080 and awaiting 2 devices to connect!
+NOOBSHER-0.1v // SERVER -=2026-06-10 11:21:16.338301=- // FILE SYSTEM INIT >> FOLDER INIT : using folder structure in ./test
+NOOBSHER-0.1v // SERVER -=2026-06-10 11:21:16.338368=- // FILE SYSTEM INITlogs : created new log file at ./test/server_main/server_info/server_logs/log_26-06-10_11-21-16.txt
+NOOBSHER-0.1v // SERVER -=2026-06-10 11:21:16.338378=- // FILE SYSTEM INIT : directory has been inited
