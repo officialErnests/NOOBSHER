@@ -3,7 +3,7 @@ import os
 from time import localtime, strftime
 from datetime import datetime
 class server:
-    def __init__(self, host, port, devices, directory):
+    def __init__(self, host, port, directory, quiet = True, devices = 0):
         self.host = host
         self.port = port
         self.devices = devices
@@ -19,7 +19,7 @@ class server:
         self.temp_log = ""
         self.log_crash = False
         self.exited = False
-        
+        self.quiet = quiet
         self.is_migration_needed = False
         self.print_server("SERVER", f"innitilized connection on {self.host}:{self.port} and awaiting {self.devices} devices to connect!", 1)
     def close(self):
@@ -28,14 +28,18 @@ class server:
         t_time = datetime.now()
         match prefix:
             case 0:
+                # succes
                 t_message = f"NOOBSHER-{self.version} // {self.name} -={t_time}=- // {module} : {message}"
             case 1:
+                # warning
                 t_message = f"NOOBSHER-{self.version} !! {self.name} -={t_time}=- !! {module} : {message}"
             case 2:
+                # error
                 t_message = f"NOOBSHER-{self.version} XX {self.name} -={t_time}=- XX {module} : {message}"
             case 3:
+                # fatal error (will close app)
                 t_message = f"NOOBSHER-{self.version} [FATAL] {self.name} -={t_time}=- [FATAL] {module} : {message}"
-        print(t_message)
+        if (not self.quiet): print(t_message)
         if self.log: 
             try:
                 if self.temp_log:
@@ -48,6 +52,14 @@ class server:
                 self.log_crash = True
                 self.print_server("PRINTER", "Failed to write to log file", 2)
         elif not self.log_crash: self.temp_log += "\n" + t_message
+    def getInfo(self, info) -> bool | object:
+        function_system = "GET INFO"
+        if hasattr(self, info):
+            self.print_server(function_system, f"Info requested {info}, and found", 0)
+            return (True, getattr(self, info))
+        else:
+            self.print_server(function_system, f"Info requested {info}, and not found", 3)
+            return (False, None)
     def is_exited(self, name) -> bool:
         if self.exited: 
             self.print_server(name, "EXITED", 3)
@@ -68,13 +80,13 @@ class server:
             self.init_dir_logs(function_system)
         except:
             self.print_server(function_system, f"log file failed to create nor find", 2)
-        
-        created_file = True
-        found_file = True
 
-        # try:
-        #     self.init_dir_files
-        # except:
+        try:
+            self.init_dir_files(function_system)
+        except:
+            self.print_server(function_system, f"Files failed to initilize, such as config", 3)
+            self.exit()
+            return False
         
         self.print_server(function_system, "directories has been inited", 0)
         return True
@@ -84,19 +96,23 @@ class server:
         if self.is_exited(function_system): return False
         main_dir_checker = ""
         found_dir = True
+        first = True
         for main_dir_iter in self.directory.split("/"):
-            if (not os.path.isdir(main_dir_iter)):
+            if first: 
+                main_dir_checker = main_dir_iter
+                first = False
+            else: main_dir_checker += "/" + main_dir_iter
+            if (not os.path.isdir(main_dir_checker)):
                 found_dir = False
-                os.mkdir(main_dir_iter)
-                self.print_server(function_system, f"innitilized root folder, {main_dir_iter}, as it wasn't found", 0)
-            main_dir_checker += main_dir_iter
+                os.mkdir(main_dir_checker)
+                self.print_server(function_system, f"innitilized root folder, {main_dir_checker}, as it wasn't found", 0)
         if found_dir:
             self.print_server(function_system, f"found root folder, {self.directory}!", 1)
         else:
             self.print_server(function_system, f"created root folder, {self.directory}!", 0)
 
         found_dir = True
-        if (not os.path.isdir(self.directory)):
+        if (not os.path.isdir(self.directory + "/server_main")):
             self.print_server(function_system, f"innitilizing folder structure in {self.directory}", 1)
             os.mkdir(self.directory + "/server_main")
             self.files["main"] = self.directory + "/server_main"
@@ -139,22 +155,47 @@ class server:
     def init_dir_files(self, function_system):
         if self.is_exited(function_system): return False
         function_system += " >> FILES INIT"
-
-        file_created = True
-        file_found = True
-        file_name = self.files["logs"] + "/config.txt"
+        file_found = False
+        file_created = False
+        #Config file
+        file_name = self.files["meta"] + "/config.txt"
         if not os.path.exists(file_name):
+            self.print_server(function_system, f"Creating new config file", 1)
+            self.init_dir_files_create_conf(function_system, file_name)
             file_found = False
-            self.print_server(function_system, f"config file found, loading data", 1)
-            with open(file_name, "x") as f: 
+        else: 
+            self.print_server(function_system, f"config file found, loading data", 0)
+            with open(file_name, "r") as f: 
                 for line in f:
                     self.init_dir_files_check_conf(function_system, line)
-
-        else: 
             file_created = False
+        
+        if file_found:
+            if file_created:
+                self.print_server(function_system, f"Created missing files and using the system", 1)
+            else:
+                self.print_server(function_system, f"Files found and using them", 1)
+        else:
+            self.print_server(function_system, f"Created all the files from new", 1)
+    def init_dir_files_create_conf(self, function_system, file_name) -> bool:
+        with open(file_name, "x") as f: 
+            f.write("THIS IS AUTOGENERATED CONFIG FILE\n")
+            f.write("Proceed with causion ;PP\n")
+            properties_to_write = {
+                "version": self.version,
+                "name": self.name
+            }
+            for key in properties_to_write:
+                f.write(key + "//" + properties_to_write[key] + "\n")
 
-        return (file_created, file_found)
+
+         
     def init_dir_files_check_conf(self, function_system, text:str) -> bool:
+        #TODO make so this loads all properties and loads into mem
+        # also make so it has stages aka
+        # stage 0 -> checks if files and loads them
+        # stage 1 -> after config is loaded
+        # or smthing like that XD
         if self.is_exited(function_system): return False
         splits = text.split("//")
         match splits[0].strip():
@@ -164,11 +205,9 @@ class server:
                 else:
                     self.print_server(function_system, f"Version not compatable! (server:{splits[1]} programm:{self.version}) please use migration, otherwise some settings may not save or there might be miscompatabilities...", 4)
                     self.is_migration_needed = True
-
         return False
     def isMigrationNeeded(self) -> bool:
         function_system = "Migration"
-        if self.is_exited(function_system): return False
         return self.is_migration_needed
     def exit(self):
         if self.log: 

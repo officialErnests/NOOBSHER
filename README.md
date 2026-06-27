@@ -1,5 +1,10 @@
 # NOOBSHER
 It is a python tool that syncs files, more crude and dumber. Made for tailscale and local networks in mind ;PP
+# Version
+x.y.z <br>
+x - big releses, think of beta / relse / whole rewrite <br>
+y - new feature, expanded feature list <br>
+z - patches / hotfixes <br>
 # Install
 In order to use this, get zip of /NOOBSHER folder <br>
 For demu install all and run /demo.py
