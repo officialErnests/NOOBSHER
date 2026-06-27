@@ -80,10 +80,24 @@ class server:
         return True
     def init_dir_folders(self, function_system):
         self.files = {}
-        created_dir = True
-        found_dir = True
         function_system += " >> FOLDER INIT"
-        if (not os.path.isdir(self.directory + "/server_main")):
+        if self.is_exited(function_system): return False
+        main_dir_checker = ""
+        found_dir = True
+        for main_dir_iter in self.directory.split("/"):
+            if (not os.path.isdir(main_dir_iter)):
+                found_dir = False
+                os.mkdir(main_dir_iter)
+                self.print_server(function_system, f"innitilized root folder, {main_dir_iter}, as it wasn't found", 0)
+            main_dir_checker += main_dir_iter
+        if found_dir:
+            self.print_server(function_system, f"found root folder, {self.directory}!", 1)
+        else:
+            self.print_server(function_system, f"created root folder, {self.directory}!", 0)
+
+        found_dir = True
+        if (not os.path.isdir(self.directory)):
+            self.print_server(function_system, f"innitilizing folder structure in {self.directory}", 1)
             os.mkdir(self.directory + "/server_main")
             self.files["main"] = self.directory + "/server_main"
             os.mkdir(self.files["main"] + "/server_info")
@@ -97,7 +111,6 @@ class server:
             os.mkdir(self.files["meta"] + "/server_logs")
             self.files["logs"] = self.files["meta"] + "/server_logs"
         else:
-            created_dir = False
             self.files["main"] = self.directory + "/server_main"
             if (not os.path.isdir(self.files["main"] + "/server_info")): os.mkdir(self.files["main"] + "/server_info"); found_dir = False
             if (not os.path.isdir(self.files["main"] + "/seerver_main")): os.mkdir(self.files["main"] + "/seerver_main"); found_dir = False
@@ -109,13 +122,12 @@ class server:
             self.files["sessions"] = self.files["main"] + "/server_session"
             if (not os.path.isdir(self.files["meta"] + "/server_logs")): os.mkdir(self.files["meta"] + "/server_logs"); found_dir = False
             self.files["logs"] = self.files["meta"] + "/server_logs"
-        if created_dir:
-            self.print_server(function_system, f"innitilized folder structure in {self.directory}", 0)
-        elif not found_dir:
-            self.print_server(function_system, f"repaired folder structure in {self.directory}", 0)
+        if not found_dir:
+            self.print_server(function_system, f"repaired folder structure in {self.directory}", 1)
         else:
             self.print_server(function_system, f"using folder structure in {self.directory}", 0)
     def init_dir_logs(self, function_system):
+        if self.is_exited(function_system): return False
         log_file_name = self.files["logs"] + "/log_" + strftime("%y-%m-%d_%H-%M-%S", localtime()) + ".txt"
         function_system += " >> LOGS INIT"
         if (not os.path.exists(log_file_name)):
@@ -125,6 +137,7 @@ class server:
             self.log = open(log_file_name, "a")
             self.print_server(function_system, f"log file already existed at {log_file_name}", 1)
     def init_dir_files(self, function_system):
+        if self.is_exited(function_system): return False
         function_system += " >> FILES INIT"
 
         file_created = True
@@ -142,6 +155,7 @@ class server:
 
         return (file_created, file_found)
     def init_dir_files_check_conf(self, function_system, text:str) -> bool:
+        if self.is_exited(function_system): return False
         splits = text.split("//")
         match splits[0].strip():
             case "version":
@@ -153,6 +167,8 @@ class server:
 
         return False
     def isMigrationNeeded(self) -> bool:
+        function_system = "Migration"
+        if self.is_exited(function_system): return False
         return self.is_migration_needed
     def exit(self):
         if self.log: 
@@ -196,24 +212,3 @@ class server:
     def test(self):
         print("Hello world!")
 
-
-class client:
-    def __init__(self, host, port):
-        self.host = host
-        self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((self.host, self.port))
-
-        while True:
-            input()
-            try:
-                fi = open("data_folder/really_cool.txt", 'r')
-                data = fi.read()
-                if not data:
-                    break
-                while data:
-                    self.socket.send(str(data).encode())
-                    data = fi.read()
-                fi.close()
-            except IOError:
-                print("invalid file")
