@@ -1,0 +1,8 @@
+
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:35:33.774413=- !! SERVER : innitilized connection on 127.0.0.1:8080 and awaiting 0 devices to connect!
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:35:33.774449=- !! FILE SYSTEM INIT >> FOLDER INIT : found root folder, test/server!
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:35:33.774467=- // FILE SYSTEM INIT >> FOLDER INIT : using folder structure in test/server
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:35:33.774531=- // FILE SYSTEM INIT >> LOGS INIT : created new log file at test/server/server_main/server_info/server_logs/log_26-06-27_23-35-33.txt
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:35:33.774549=- !! FILE SYSTEM INIT >> FILES INIT : Creating new config file
+NOOBSHER-0.1v [FATAL] SERVER -=2026-06-27 23:35:33.774581=- [FATAL] FILE SYSTEM INIT : Files failed to initilize, such as config
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:35:33.774588=- // EXITER : closing log file

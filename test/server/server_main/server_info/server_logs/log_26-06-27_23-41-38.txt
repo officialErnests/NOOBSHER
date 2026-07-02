@@ -1,0 +1,13 @@
+
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:41:38.101956=- !! SERVER : innitilized connection on 127.0.0.1:8080 and awaiting 0 devices to connect!
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:41:38.101987=- !! FILE SYSTEM INIT >> FOLDER INIT : found root folder, test/server!
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:41:38.102005=- // FILE SYSTEM INIT >> FOLDER INIT : using folder structure in test/server
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:41:38.102072=- // FILE SYSTEM INIT >> LOGS INIT : created new log file at test/server/server_main/server_info/server_logs/log_26-06-27_23-41-38.txt
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:41:38.102084=- !! FILE SYSTEM INIT >> FILES INIT : Creating new config file
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:41:38.102108=- !! FILE SYSTEM INIT >> FILES INIT : Files found and using them
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:41:38.102112=- !! FILE SYSTEM INIT >> FILES INIT : version, 0.1v
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:41:38.102116=- !! FILE SYSTEM INIT >> FILES INIT : name, SERVER
+NOOBSHER-0.1v !! SERVER -=2026-06-27 23:41:38.102144=- !! FILE SYSTEM INIT >> FILES INIT : Created all the files from new
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:41:38.102147=- // FILE SYSTEM INIT : directories has been inited
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:41:38.102151=- // GET INFO : Info requested version, and found
+NOOBSHER-0.1v // SERVER -=2026-06-27 23:42:12.014848=- // EXITER : closing log file
