@@ -13,13 +13,17 @@ class server:
         self.connections = []
         self.directory = directory
         self.name = "SERVER"
-        self.version = "0.1v"
         self.files = {}
         self.log = None
         self.temp_log = ""
         self.log_crash = False
         self.exited = False
-        
+        self.config = {
+            "version": 1.0
+        }
+        self.default_config = {
+            "version": 1.0
+        }
         self.is_migration_needed = False
         self.print_server("SERVER", f"innitilized connection on {self.host}:{self.port} and awaiting {self.devices} devices to connect!", 1)
     def close(self):
@@ -28,13 +32,13 @@ class server:
         t_time = datetime.now()
         match prefix:
             case 0:
-                t_message = f"NOOBSHER-{self.version} // {self.name} -={t_time}=- // {module} : {message}"
+                t_message = f"NOOBSHER-{self.config["version"]}v // {self.name} -={t_time}=- // {module} : {message}"
             case 1:
-                t_message = f"NOOBSHER-{self.version} !! {self.name} -={t_time}=- !! {module} : {message}"
+                t_message = f"NOOBSHER-{self.config["version"]}v !! {self.name} -={t_time}=- !! {module} : {message}"
             case 2:
-                t_message = f"NOOBSHER-{self.version} XX {self.name} -={t_time}=- XX {module} : {message}"
+                t_message = f"NOOBSHER-{self.config["version"]}v XX {self.name} -={t_time}=- XX {module} : {message}"
             case 3:
-                t_message = f"NOOBSHER-{self.version} [FATAL] {self.name} -={t_time}=- [FATAL] {module} : {message}"
+                t_message = f"NOOBSHER-{self.config["version"]}v [FATAL] {self.name} -={t_time}=- [FATAL] {module} : {message}"
         print(t_message)
         if self.log: 
             try:
@@ -134,23 +138,33 @@ class server:
             file_found = False
             self.print_server(function_system, f"config file found, loading data", 1)
             with open(file_name, "x") as f: 
+                checked = {}
+                for i,n in self.config:
+                    checked[i] = False
                 for line in f:
-                    self.init_dir_files_check_conf(function_system, line)
-
+                    self.init_dir_files_check_conf(function_system, line, checked)
         else: 
             file_created = False
 
         return (file_created, file_found)
-    def init_dir_files_check_conf(self, function_system, text:str) -> bool:
+    def init_dir_files_check_conf(self, function_system, text:str, checked) -> bool:
         splits = text.split("//")
-        match splits[0].strip():
-            case "version":
-                if (splits[1] == self.version):
-                    self.print_server(function_system, f"Version great {self.version}", 0)
-                else:
-                    self.print_server(function_system, f"Version not compatable! (server:{splits[1]} programm:{self.version}) please use migration, otherwise some settings may not save or there might be miscompatabilities...", 4)
-                    self.is_migration_needed = True
+        if splits[1].strip() == "":
+            self.print_server(function_system, f"Value {splits[0].strip()} is not set, defaulting to {self.default_config[splits[0].strip()]}", 4)
+            self.config[splits[0].strip()] = self.default_config[splits[0].strip()]
+            checked[splits[0].strip()] = True
+        if splits[0].strip() in self.config:
+            if self.config[splits[0].strip()] is None:
+                self.config[splits[0].strip()] = splits[1].strip()
+            elif self.config[splits[0].strip()] == splits[1].strip():
 
+
+            checked["version"] = True
+            if (splits[1] == self.config["version"]):
+                self.print_server(function_system, f"Version great {self.config["version"]}", 0)
+            else:
+                self.print_server(function_system, f"Version not compatable! (server:{splits[1]} programm:{self.config["version"]}) please use migration, otherwise some settings may not save or there might be miscompatabilities...", 4)
+                self.is_migration_needed = True
         return False
     def isMigrationNeeded(self) -> bool:
         return self.is_migration_needed
